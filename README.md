@@ -1,8 +1,40 @@
-# Scaffold Stellar Frontend
+# Rent a Car - Stellar DApp
 
-_To get started with Scaffold Stellar, visit its repo: [github.com/AhaLabs/scaffold-stellar](https://github.com/AhaLabs/scaffold-stellar)._
+_Proyecto desarrollado con Scaffold Stellar para gestión descentralizada de alquiler de vehículos._
 
-_Under active development._
+## 🚗 Descripción del Proyecto
+
+Sistema de alquiler de vehículos implementado en Stellar con smart contracts en Rust y frontend React. El contrato incluye gestión de roles (Admin, Owner, Renter), sistema de comisiones para el administrador, y validaciones de retiro basadas en el estado del vehículo. Los owners pueden registrar sus autos y retirar fondos solo cuando están disponibles, mientras que los renters pueden alquilar vehículos pagando un depósito más la comisión configurada por el admin.
+
+## 📸 Capturas de Pantalla
+
+### Conexión de Wallet
+
+![Conexión de Wallet](./res-markdown/foto_prueba_b1.png)
+
+### Selección de Rol
+
+![Selección de Rol](./res-markdown/foto_prueba_b2.png)
+
+### Vista Admin - Creación de Autos
+
+![Vista Admin](./res-markdown/foto_prueba_b3.png)
+
+### Catálogo de Vehículos
+
+![Catálogo de Vehículos](./res-markdown/foto_prueba_b4.png)
+
+### Gestión de Alquileres
+
+![Gestión de Alquileres](./res-markdown/foto_prueba_b5.png)
+
+### Transacciones en Stellar Expert
+
+![Stellar Expert](./res-markdown/foto_prueba_b6.png)
+
+---
+
+## 🛠️ Tecnologías Utilizadas
 
 A modern, up-to-date toolkit for building Stellar smart contract frontends.
 
@@ -28,84 +60,125 @@ Before getting started, make sure you’ve met the requirements listed in the [S
 
 ## Quick Start
 
-To get started with a fresh Scaffold Stellar project, follow the steps below:
-
-1. Initialize a new project:
+### 1. Clonar el Repositorio
 
 ```bash
-stellar scaffold init my-project
-cd my-project
+git clone <repository-url>
+cd Scaffold-Bootcamp-Odisea
 ```
 
-2. Set up your development environment:
+### 2. Configurar el Entorno
 
 ```bash
-# Copy and configure environment variables like network and STELLAR_SCAFFOLD_ENV
+# Copiar variables de entorno
 cp .env.example .env
 
-# Install frontend dependencies
+# Instalar dependencias
 npm install
+
+# Instalar target de Rust para WASM
+rustup target add wasm32-unknown-unknown
 ```
 
-Have a look at `environments.toml` for more fined-grained control.
-
-3. Start development environment:
+### 3. Ejecutar el Proyecto
 
 ```bash
+# Iniciar servidor de desarrollo (incluye contrato local y frontend)
 npm run dev
 ```
 
-Open the server URL in your web browser.
+La aplicación estará disponible en `http://localhost:5173`
 
-4. For testnet/mainnet deployment:
-
-When you are ready for testnet, you need to deploy your contract using
-`stellar registry`. Some commands to get you started.
+### 4. Construir el Contrato
 
 ```bash
-#  Note --source-account argument is omitted for clarity
+# Compilar el contrato Rust
+stellar contract build
 
-# First publish your contract to the registry
-stellar registry publish
-
-# Then deploy an instance with constructor parameters
-stellar registry deploy \
-  --deployed-name my-contract \
-  --published-name my-contract \
-  -- \
-  --param1 value1
-
-# Can access the help docs with --help
-stellar registry deploy \
-  --deployed-name my-contract \
-  --published-name my-contract \
-  -- \
-  --help
-
-# Install the deployed contract locally
-stellar registry create-alias my-contract
+# El archivo WASM se genera en: target/wasm32v1-none/release/rent_a_car.wasm
 ```
 
-## Scaffold Initial Project Structure
+## 📋 Funcionalidades Implementadas
 
-When you run `stellar scaffold init`, it creates a frontend-focused project structure with example contracts:
+### Smart Contract (Rust)
+
+- ✅ Registro de vehículos por owners con precio por día
+- ✅ Sistema de alquiler con validación de estado
+- ✅ Comisión configurable por el administrador
+- ✅ Acumulación automática de comisiones en cada alquiler
+- ✅ Retiro de comisiones exclusivo para admin
+- ✅ Retiro de fondos para owners solo con auto disponible
+- ✅ Función de devolución para cambiar estado del vehículo
+
+### Frontend (React + TypeScript)
+
+- ✅ Integración con Freighter wallet
+- ✅ Selección de roles (Admin, Owner, Renter)
+- ✅ Interfaz para crear y gestionar vehículos
+- ✅ Catálogo de autos con filtrado por estado
+- ✅ Botones contextuales según rol del usuario
+- ✅ Validación de acciones según estado del vehículo
+- ✅ Enlaces a Stellar Expert para verificar transacciones
+
+## 🔧 Estructura del Proyecto
+
+## 🔧 Estructura del Proyecto
 
 ```
 my-project/                      # Your initialized project
-├── contracts/                   # Example smart contracts
-├── packages/                    # Auto-generated TypeScript clients
+├── contracts/                   # Smart contracts en Rust
+│   └── rent-a-car/             # Contrato de alquiler de vehículos
+│       ├── src/
+│       │   ├── contract.rs     # Implementación del contrato
+│       │   ├── interfaces/     # Traits del contrato
+│       │   └── storage/        # Gestión de almacenamiento
+│       │       ├── admin.rs    # Funciones del administrador
+│       │       ├── car.rs      # Gestión de vehículos
+│       │       ├── commission.rs # Sistema de comisiones
+│       │       └── rental.rs   # Gestión de alquileres
 ├── src/                         # Frontend React application
-│   ├── components/              # React components
-│   ├── contracts/               # Contract interaction helpers
-│   ├── debug/                   # Debugging contract explorer
-│   ├── hooks/                   # Custom React hooks
-│   ├── pages/                   # App Pages
-│   ├── App.tsx                  # Main application component
-│   └── main.tsx                 # Application entry point
+│   ├── components/              # Componentes React
+│   │   ├── CarList.tsx         # Listado de vehículos
+│   │   └── CreateCarForm.tsx   # Formulario de creación
+│   ├── interfaces/              # TypeScript interfaces
+│   ├── pages/                   # Páginas de la aplicación
+│   │   ├── ConnectWallet.tsx   # Conexión wallet
+│   │   ├── RoleSelection.tsx   # Selección de rol
+│   │   └── Dashboard.tsx       # Panel principal
+│   ├── providers/               # Context providers
+│   └── services/                # Servicios de integración
+│       └── stellar.service.ts  # Cliente Stellar SDK
 ├── target/                      # Build artifacts and WASM files
-├── environments.toml            # Environment configurations
-├── package.json                 # Frontend dependencies
-└── .env                         # Local environment variables
+├── environments.toml            # Configuración de entornos
+└── package.json                 # Frontend dependencies
 ```
 
-This template provides a ready-to-use frontend application with example smart contracts and their TypeScript clients. You can use these as reference while building your own contracts and UI. The frontend is set up with Vite, React, and includes basic components for interacting with the contracts.
+## 🌐 Deploy a Testnet/Mainnet
+
+Para desplegar en testnet o mainnet:
+
+```bash
+# Publicar el contrato al registry
+stellar registry publish
+
+# Desplegar una instancia con parámetros del constructor
+stellar registry deploy \
+  --deployed-name rent-a-car \
+  --published-name rent-a-car \
+  -- \
+  --admin <ADMIN_ADDRESS> \
+  --token <TOKEN_ADDRESS>
+
+# Crear alias local del contrato desplegado
+stellar registry create-alias rent-a-car
+```
+
+## 📚 Recursos
+
+- [Stellar Documentation](https://developers.stellar.org/)
+- [Soroban Smart Contracts](https://developers.stellar.org/docs/build/smart-contracts)
+- [Scaffold Stellar](https://github.com/AhaLabs/scaffold-stellar)
+
+---
+
+**Desarrollado con Scaffold Stellar** 🚀
